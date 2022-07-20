@@ -1,0 +1,11 @@
+45178	StorageFurniture
+45247	StorageFurniture
+45248	StorageFurniture
+45633	StorageFurniture
+45690	StorageFurniture
+45783	StorageFurniture
+45855	StorageFurniture
+46481	StorageFurniture
+45922	StorageFurniture
+46107	StorageFurniture
+47391	StorageFurniture

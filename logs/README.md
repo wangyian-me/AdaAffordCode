@@ -1,0 +1,1 @@
+We save the trained model parameters in this directory.

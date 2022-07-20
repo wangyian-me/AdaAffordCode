@@ -1,0 +1,15 @@
+python iter_train.py \
+  --AAP_dir ../logs/model_AAP_para \
+  --AAP_epoch 40-network.pth \
+  --AIP_dir ../logs/model_AIP_para \
+  --AIP_epoch 40-network.pth  \
+  --AAP_aff_dir ../logs/model_AAP_aff_para \
+  --AAP_aff_epoch 40-network.pth \
+  --AIP_aff_dir ../logs/model_AIP_aff_para \
+  --AIP_aff_epoch 40-network.pth  \
+  --primact_type pulling \
+  --exp_name final_model_para \
+  --step 4 \
+  --no_gui \
+  --hidden_dim 128 \
+  --data_dir ../data/test_push_data_dir
