@@ -339,25 +339,25 @@ def run_an_collect(idx_process, args, transition_Q, epoch_Q):
     if args.primact_type == "pulling":
         train_conf = torch.load(
             os.path.join(
-                "..logs/final_logs/finalexp-model_all_final-pulling-None-train_all_v1",
+                "../where2actPP/logs/final_logs/finalexp-model_all_final-pulling-None-train_all_v1",
                 'conf.pth'))
         actor = model_3d_w2a.Network(feat_dim=train_conf.feat_dim, rv_dim=train_conf.rv_dim,
                                      rv_cnt=train_conf.rv_cnt)
         data_to_restore = torch.load(
             os.path.join(
-                "../logs/final_logs/finalexp-model_all_final-pulling-None-train_all_v1",
+                "../where2actPP/logs/final_logs/finalexp-model_all_final-pulling-None-train_all_v1",
                 'ckpts', '81-network.pth'))
         actor.load_state_dict(data_to_restore, strict=False)
         actor.to(device).eval()
     else:
         train_conf = torch.load(
             os.path.join(
-                "../logs/final_logs/finalexp-model_all_final-pushing-None-train_all_v1",
+                "../where2actPP/logs/final_logs/finalexp-model_all_final-pushing-None-train_all_v1",
                 'conf.pth'))
         actor = model_3d_w2a.Network(feat_dim=train_conf.feat_dim, rv_dim=train_conf.rv_dim,
                                      rv_cnt=train_conf.rv_cnt)
         data_to_restore = torch.load(os.path.join(
-            "../logs/final_logs/finalexp-model_all_final-pushing-None-train_all_v1",
+            "../where2actPP/logs/final_logs/finalexp-model_all_final-pushing-None-train_all_v1",
             'ckpts', '92-network.pth'))
         actor.load_state_dict(data_to_restore, strict=False)
         actor.to(device).eval()
