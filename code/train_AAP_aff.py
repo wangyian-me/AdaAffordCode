@@ -349,12 +349,8 @@ if __name__ == '__main__':
     parser.add_argument('--exp_suffix', type=str, help='exp suffix')
     parser.add_argument('--model_version', type=str, default='model_AAP', help='model def file')
     parser.add_argument('--primact_type', type=str)
-    parser.add_argument('--data_dir_prefix', type=str, help='data directory')
-    parser.add_argument('--offline_data_dir', type=str, help='data directory')
-    parser.add_argument('--val_data_dir', type=str, help='data directory')
-    # parser.add_argument('--val_data_fn', type=str, help='data directory', default='data_tuple_list_val_subset.txt')
-    parser.add_argument('--train_shape_fn', type=str, help='training shape file that indexs all shape-ids')
-    parser.add_argument('--ins_cnt_fn', type=str, help='a file listing all category instance count')
+    parser.add_argument('--val_data_list', type=str, help='data directory')
+    parser.add_argument('--train_data_list', type=str, help='data directory')
     parser.add_argument('--critic_dir', type=str, help='data directory')
     parser.add_argument('--critic_epoch', type=str, help='data directory')
 
@@ -370,52 +366,26 @@ if __name__ == '__main__':
                         help='resume if exp_dir exists [default: False]')
 
     # network settings
-    parser.add_argument('--img_size', type=int, default=224)
-    parser.add_argument('--num_steps', type=int, default=10)
     parser.add_argument('--num_point_per_shape', type=int, default=10000)
     parser.add_argument('--feat_dim', type=int, default=128)
     parser.add_argument('--hidden_dim', type=int, default=128)
-    parser.add_argument('--no_true_false_equal', action='store_true', default=False,
-                        help='if make the true/false data loaded equally [default: False]')
 
     # training parameters
     parser.add_argument('--epochs', type=int, default=10000)
-    parser.add_argument('--buffer_max_num', type=int, default=20000)
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--lr', type=float, default=0.001)
     parser.add_argument('--weight_decay', type=float, default=1e-5)
     parser.add_argument('--lr_decay_by', type=float, default=0.9)
     parser.add_argument('--lr_decay_every', type=float, default=5000)
-    parser.add_argument('--sample_succ', action='store_true', default=False)
-    parser.add_argument('--angle_system', type=int, default=0)
-    parser.add_argument('--num_train', type=int, default=2000)
-    parser.add_argument('--num_eval', type=int, default=200)
-    parser.add_argument('--degree_lower', type=int, default=15)
-    parser.add_argument('--actor_noise', type=int, default=1)
-    parser.add_argument('--wp_xyz', action='store_true', default=False,
-                        help='if make the true/false data loaded equally [default: False]')
     parser.add_argument('--ignore_joint_info', action='store_true', default=False)
     parser.add_argument('--load', action='store_true', default=False)
     parser.add_argument('--continuous', action='store_true', default=False)
     parser.add_argument('--cam', action='store_true', default=False)
-    # loss weights
-    parser.add_argument('--lbd_kl', type=float, default=1.0)
-    parser.add_argument('--lbd_dir', type=float, default=1.0)
-    parser.add_argument('--lbd_dis', type=float, default=1.0)
-    parser.add_argument('--left', type=float, default=0)
-    parser.add_argument('--right', type=float, default=0)
-    parser.add_argument('--random', type=float, default=1)
     # logging
     parser.add_argument('--no_tb_log', action='store_true', default=False)
     parser.add_argument('--no_console_log', action='store_true', default=False)
     parser.add_argument('--console_log_interval', type=int, default=10,
                         help='number of optimization steps beween console log prints')
-
-    # visu
-    parser.add_argument('--num_batch_every_visu', type=int, default=1, help='num batch every visu')
-    parser.add_argument('--num_epoch_every_visu', type=int, default=10, help='num epoch every visu')
-    parser.add_argument('--no_visu', action='store_true', default=False, help='no visu? [default: False]')
-
     # pc
     parser.add_argument('--sample_type', type=str, default='fps')
     # parse args
@@ -423,7 +393,7 @@ if __name__ == '__main__':
     conf.ignore_joint_info = True
     ### prepare before training
     # make exp_name
-    conf.exp_name = f'exp-{conf.model_version}-{conf.primact_type}-{conf.exp_suffix}'
+    conf.exp_name = f'{conf.exp_suffix}'
 
     if conf.overwrite and conf.resume:
         raise ValueError('ERROR: cannot specify both --overwrite and --resume!')
@@ -446,8 +416,6 @@ if __name__ == '__main__':
         os.mkdir(conf.exp_dir)
         os.mkdir(conf.tb_dir)
         os.mkdir(os.path.join(conf.exp_dir, 'ckpts'))
-        if not conf.no_visu:
-            os.mkdir(os.path.join(conf.exp_dir, 'val_visu'))
 
     # control randomness
     if conf.seed < 0:
@@ -479,7 +447,7 @@ if __name__ == '__main__':
     # parse params
     # utils.printout(flog, 'primact_type: %s' % str(conf.primact_type))
 
-    train_data_list, val_data_list = [], []
+    train_data_list, val_data_list = conf.train_data_list, conf.val_data_list
     train(conf, train_data_list, val_data_list)
 
     ### before quit

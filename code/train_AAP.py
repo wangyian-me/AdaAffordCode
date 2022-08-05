@@ -78,7 +78,6 @@ def train(conf, train_data_list, val_data_list):
 
     network_opt.zero_grad()
     # train for every epoch
-    save_step = 0
     for epoch in range(start_epoch, conf.epochs):
         ### collect data for the current epoch
         if epoch > start_epoch:
@@ -100,7 +99,6 @@ def train(conf, train_data_list, val_data_list):
         ### train for every batch
 
         for train_batch_ind, batch in train_batches:
-            save_step += 1
             train_fraction_done = (train_batch_ind + 1) / train_num_batch
             train_step = epoch * train_num_batch + train_batch_ind
 
@@ -110,10 +108,10 @@ def train(conf, train_data_list, val_data_list):
                 last_train_console_log_step = train_step
 
             # save checkpoint
-            if save_step % 100 == 0:
+            if epoch % 5 == 0 and train_batch_ind == 0:
                 with torch.no_grad():
                     utils.printout(conf.flog, 'Saving checkpoint ...... ')
-                    torch.save(network.state_dict(), os.path.join(conf.exp_dir, 'ckpts', '%d-network.pth' % (save_step//100)))
+                    torch.save(network.state_dict(), os.path.join(conf.exp_dir, 'ckpts', '%d-network.pth' % (epoch)))
                     # torch.save(network_opt.state_dict(),
                     #            os.path.join(conf.exp_dir, 'ckpts', '%d-optimizer.pth' % epoch))
                     # torch.save(network_lr_scheduler.state_dict(),
@@ -306,7 +304,7 @@ if __name__ == '__main__':
     conf.ignore_joint_info = True
     ### prepare before training
     # make exp_name
-    conf.exp_name = f'exp-{conf.model_version}-{conf.exp_suffix}'
+    conf.exp_name = f'{conf.exp_suffix}'
 
     # mkdir exp_dir; ask for overwrite if necessary; or resume
     conf.exp_dir = os.path.join(conf.log_dir, conf.exp_name)

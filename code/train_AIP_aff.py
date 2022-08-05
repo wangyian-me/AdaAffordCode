@@ -33,13 +33,13 @@ def train(conf, train_data_list, val_data_list):
     model_def = utils.get_model_module(conf.critic_version)
 
     # create models
-    data_to_restore = torch.load(os.path.join(conf.critic_dir, 'ckpts', conf.critic_epoch))
+    data_to_restore = torch.load(os.path.join(conf.critic_dir, 'ckpts', f"{conf.critic_epoch}-network.pth"))
     critic = model_def.network(input_dim=17, pnpp_feat_dim=128, hidden_feat_dim=128, feat_dim=conf.feat_dim, hidden_dim=conf.hidden_dim).to(conf.device).eval()
     critic.load_state_dict(data_to_restore)
 
     model_def = utils.get_model_module(conf.AIP_version)
     data_to_restore = torch.load(
-        os.path.join(conf.AIP_dir, 'ckpts', conf.AIP_epoch))
+        os.path.join(conf.AIP_dir, 'ckpts', f"{conf.AIP_epoch}-network.pth"))
     AIP_critic = model_def.AIP(feat_dim=conf.feat_dim, hidden_dim=conf.hidden_dim).to(conf.device).eval()
     AIP_critic.load_state_dict(data_to_restore)
 
@@ -367,7 +367,7 @@ if __name__ == '__main__':
 
     # main parameters (required)
     parser.add_argument('--exp_suffix', type=str, help='exp suffix')
-    parser.add_argument('--critic_version', type=str, default='model_critic', help='model def file')
+    parser.add_argument('--critic_version', type=str, default='model_AAP', help='model def file')
     parser.add_argument('--AIP_version', type=str, default='model_AIP', help='model def file')
     parser.add_argument('--AIP_afford_version', type=str, default='model_AIP_affordance', help='model def file')
     parser.add_argument('--critic_dir', type=str, help='data directory')
@@ -375,29 +375,19 @@ if __name__ == '__main__':
     parser.add_argument('--AIP_dir', type=str, help='data directory')
     parser.add_argument('--AIP_epoch', type=str, help='data directory')
     parser.add_argument('--primact_type', type=str, default='pushing', help='the primact type')
+    parser.add_argument('--val_data_list', type=str, help='data directory')
+    parser.add_argument('--train_data_list', type=str, help='data directory')
     # main parameters (optional)
     parser.add_argument('--device', type=str, default='cuda:0', help='cpu or cuda:x for using cuda on GPU number x')
-    # parser.add_argument('--seed', type=int, default=3124256514, help='random seed (for reproducibility) [specify -1 means to generate a random one]')
-    parser.add_argument('--seed', type=int, default=-1,
-                        help='random seed (for reproducibility) [specify -1 means to generate a random one]')
+    parser.add_argument('--seed', type=int, default=3124256514, help='random seed (for reproducibility) [specify -1 means to generate a random one]')
     parser.add_argument('--log_dir', type=str, default='../logs', help='exp logs directory')
-    parser.add_argument('--overwrite', action='store_true', default=False,
-                        help='overwrite if exp_dir exists [default: False]')
-    parser.add_argument('--resume', action='store_true', default=False,
-                        help='resume if exp_dir exists [default: False]')
-
     # network settings
-    parser.add_argument('--img_size', type=int, default=224)
-    parser.add_argument('--num_steps', type=int, default=10)
     parser.add_argument('--num_point_per_shape', type=int, default=10000)
     parser.add_argument('--feat_dim', type=int, default=128)
-    parser.add_argument('--hidden_dim', type=int, default=32)
-    parser.add_argument('--no_true_false_equal', action='store_true', default=False,
-                        help='if make the true/false data loaded equally [default: False]')
+    parser.add_argument('--hidden_dim', type=int, default=128)
 
     # training parameters
     parser.add_argument('--epochs', type=int, default=10000)
-    parser.add_argument('--buffer_max_num', type=int, default=20000)
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--lr', type=float, default=0.001)
     parser.add_argument('--weight_decay', type=float, default=1e-5)
@@ -405,9 +395,6 @@ if __name__ == '__main__':
     parser.add_argument('--lr_decay_every', type=float, default=5000)
     parser.add_argument('--ignore_joint_info', action='store_true', default=False)
     # loss weights
-    parser.add_argument('--lbd_kl', type=float, default=1.0)
-    parser.add_argument('--lbd_dir', type=float, default=1.0)
-    parser.add_argument('--lbd_dis', type=float, default=1.0)
     parser.add_argument('--left', type=float, default=0)
     parser.add_argument('--right', type=float, default=0)
     parser.add_argument('--random', type=float, default=1)
@@ -416,7 +403,6 @@ if __name__ == '__main__':
     parser.add_argument('--no_console_log', action='store_true', default=False)
     parser.add_argument('--console_log_interval', type=int, default=10,
                         help='number of optimization steps beween console log prints')
-
     # pc
     parser.add_argument('--sample_type', type=str, default='fps')
     # parse args
@@ -424,31 +410,23 @@ if __name__ == '__main__':
     conf.ignore_joint_info = True
     ### prepare before training
     # make exp_name
-    conf.exp_name = f'exp-{conf.critic_version}-{conf.primact_type}-{conf.exp_suffix}'
+    conf.exp_name = f'{conf.exp_suffix}'
 
-    if conf.overwrite and conf.resume:
-        raise ValueError('ERROR: cannot specify both --overwrite and --resume!')
-
-    # mkdir exp_dir; ask for overwrite if necessary; or resume
+    # mkdir exp_dir; ask for overwrite if necessary;
     conf.exp_dir = os.path.join(conf.log_dir, conf.exp_name)
     print('exp_dir: ', conf.exp_dir)
     conf.tb_dir = os.path.join(conf.exp_dir, 'tb')
     if os.path.exists(conf.exp_dir):
-        if not conf.resume:
-            if not conf.overwrite:
-                response = input('A training run named "%s" already exists, overwrite? (y/n) ' % conf.exp_name)
-                if response != 'y':
-                    exit(1)
-            shutil.rmtree(conf.exp_dir)
-    else:
-        if conf.resume:
-            raise ValueError('ERROR: no training run named %s to resume!' % conf.exp_name)
-    if not conf.resume:
-        os.mkdir(conf.exp_dir)
-        os.mkdir(conf.tb_dir)
-        os.mkdir(os.path.join(conf.exp_dir, 'ckpts'))
-        if not conf.no_visu:
-            os.mkdir(os.path.join(conf.exp_dir, 'val_visu'))
+        response = input('A training run named "%s" already exists, overwrite? (y/n) ' % conf.exp_name)
+        if response != 'y':
+            exit(1)
+        shutil.rmtree(conf.exp_dir)
+
+
+    os.mkdir(conf.exp_dir)
+    os.mkdir(conf.tb_dir)
+    os.mkdir(os.path.join(conf.exp_dir, 'ckpts'))
+
 
     # control randomness
     if conf.seed < 0:
@@ -458,14 +436,10 @@ if __name__ == '__main__':
     torch.manual_seed(conf.seed)
 
     # save config
-    if not conf.resume:
-        torch.save(conf, os.path.join(conf.exp_dir, 'conf.pth'))
+    torch.save(conf, os.path.join(conf.exp_dir, 'conf.pth'))
 
     # file log
-    if conf.resume:
-        flog = open(os.path.join(conf.exp_dir, 'train_log.txt'), 'a+')
-    else:
-        flog = open(os.path.join(conf.exp_dir, 'train_log.txt'), 'w')
+    flog = open(os.path.join(conf.exp_dir, 'train_log.txt'), 'w')
     conf.flog = flog
 
     # backup command running
@@ -480,8 +454,7 @@ if __name__ == '__main__':
     # parse params
     # utils.printout(flog, 'primact_type: %s' % str(conf.primact_type))
 
-    train_data_list, val_data_list = [], []
-    train(conf, train_data_list, val_data_list)
+    train(conf, conf.train_data_list, conf.val_data_list)
 
     ### before quit
     # close file log

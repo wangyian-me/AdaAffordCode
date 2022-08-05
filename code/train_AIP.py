@@ -363,7 +363,7 @@ if __name__ == '__main__':
     conf.ignore_joint_info = True
     ### prepare before training
     # make exp_name
-    conf.exp_name = f'exp-{conf.model_version}-{conf.exp_suffix}'
+    conf.exp_name = f'{conf.exp_suffix}'
 
 
     # mkdir exp_dir; ask for overwrite if necessary; or resume
