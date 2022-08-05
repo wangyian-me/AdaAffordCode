@@ -35,7 +35,7 @@ parser.add_argument('--true_thres', type=float, default=0.01)
 parser.add_argument('--collect_num', type=int, default=1)
 args = parser.parse_args()
 
-def run_collect(cnt_id=args.cnt_id, trial_id=args.trial_id, primact_type=args.primact_type,
+def run_collect(cnt_id=0, trial_id=0, primact_type=args.primact_type,
                 out_dir=args.out_dir):
     if args.test:
         out_dir = os.path.join(out_dir, '%s_push_val_%s' % (args.date, args.collect_num))
@@ -468,4 +468,4 @@ def run_collect(cnt_id=args.cnt_id, trial_id=args.trial_id, primact_type=args.pr
 
 
 for idx_process in range(args.num_processes):
-    run_collect(idx_process, args.trial_id, args.shape_id, args.primact_type, args.out_dir)
+    run_collect(idx_process, 0, args.primact_type, args.out_dir)
