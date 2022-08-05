@@ -34,10 +34,6 @@ def train(conf, train_data_list, val_data_list):
     # learning rate scheduler
     network_lr_scheduler = torch.optim.lr_scheduler.StepLR(network_opt, step_size=conf.lr_decay_every,
                                                            gamma=conf.lr_decay_by)
-
-    if conf.load:
-        data_to_restore = torch.load(os.path.join("../logs/", conf.load_dir, "ckpts", f"{conf.load_num}-network.pth"))
-        network.load_state_dict(data_to_restore)
     # create logs
     if not conf.no_console_log:
         header = '     Time    Epoch     Dataset    Iteration    Progress(%)      TotalLoss'
