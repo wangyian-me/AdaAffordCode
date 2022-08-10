@@ -28,7 +28,7 @@ parser.add_argument('--num_point_per_shape', type=int, default=10000)
 parser.add_argument('--batch_size', type=int, default=32)
 parser.add_argument('--hidden_dim', type=int, default=128)
 parser.add_argument('--feat_dim', type=int, default=128)
-parser.add_argument('--primact_type', type=str, default='pushing', help='the primact type')
+parser.add_argument('--primact_type', type=str, default='pulling', help='the primact type')
 parser.add_argument('--no_gui', action='store_true', default=False, help='no_gui [default: False]')
 parser.add_argument('--AAP_dir', type=str, default='nothing')
 parser.add_argument('--AAP_epoch', type=str, default='nothing')
@@ -372,7 +372,7 @@ def run_an_collect(idx_process, args, transition_Q, epoch_Q):
 
     data_to_store = torch.load(
         os.path.join(args.AIP_dir, 'ckpts', args.AIP_epoch))
-    AIP.load_state_dict(data_to_store)
+    AIP_old.load_state_dict(data_to_store)
 
     ############################################################################################################
     robot_loaded = 0
@@ -387,8 +387,6 @@ def run_an_collect(idx_process, args, transition_Q, epoch_Q):
     tot_FN = 0
     tot_FP = 0
     tot_succ = 0
-    train_AIP = args.train_AIP
-    train_AAP = args.train_AAP
     robot_material_dict = {}
     object_material_dict = {}
     for epoch in range(20):
@@ -801,7 +799,7 @@ def run_an_collect(idx_process, args, transition_Q, epoch_Q):
 trans_q = mp.Queue()
 epoch_q = mp.Queue()
 # args.device = "cuda:1"
-for idx_process in range(7):
+for idx_process in range(1):
     p = mp.Process(target=run_an_collect, args=(idx_process, args, trans_q, epoch_q))
     p.start()
 

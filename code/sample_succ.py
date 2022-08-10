@@ -616,7 +616,7 @@ def run_an_collect(idx_process, args):
                 mov_dir /= np.linalg.norm(mov_dir)
                 intended_dir = -up
                 intend_motion = intended_dir @ mov_dir
-                if (intend_motion < 0.5 and args.primact_type == 'pulling')::
+                if (intend_motion < 0.5 and args.primact_type == 'pulling'):
                     gt_motion = 0
                     final_target_part_qpos = start_pos
                     cur_qpos[target_part_joint_idx] = start_pos

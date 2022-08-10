@@ -1,4 +1,4 @@
-python iter_train.py \
+python sample_succ.py \
   --AAP_dir ../logs/model_AAP_para \
   --AAP_epoch 40-network.pth \
   --AIP_dir ../logs/model_AIP_para \
@@ -12,4 +12,4 @@ python iter_train.py \
   --step 4 \
   --no_gui \
   --hidden_dim 128 \
-  --data_dir ../data/test_push_data_dir
+  --data_dir ../data/test_pull_data_dir
