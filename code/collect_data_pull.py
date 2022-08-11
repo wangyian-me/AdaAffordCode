@@ -40,7 +40,7 @@ def run_collect(cnt_id=0, trial_id=0, primact_type=args.primact_type,
     if args.test:
         out_dir = os.path.join(out_dir, '%s_pull_val_%s' % (args.date, args.collect_num))
     else:
-        out_dir = os.path.join(out_dir, '%s_pull__%s' % (args.date, args.collect_num))
+        out_dir = os.path.join(out_dir, '%s_pull_%s' % (args.date, args.collect_num))
     if not os.path.exists(out_dir):
         os.mkdir(out_dir)
     out_dir = os.path.join(out_dir, 'process_%d' % (cnt_id))
@@ -56,7 +56,6 @@ def run_collect(cnt_id=0, trial_id=0, primact_type=args.primact_type,
     train_shape_list = []
     all_cat_list = ['StorageFurniture', 'Kettle', 'Box', 'Refrigerator', 'Switch', 'TrashCan', 'Window', 'Faucet',
                     'Microwave', 'Door']
-    # all_cat_list = ['StorageFurniture', 'Microwave', 'Refrigerator', 'WashingMachine']
     tot_cat = len(all_cat_list)
     len_shape = {}
     len_train_shape = {}
