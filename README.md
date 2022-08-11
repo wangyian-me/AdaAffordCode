@@ -40,6 +40,17 @@ The other requirements could be installed directly by pip install.
 For visualization, please install blender v2.79 and put the executable in your environment path.
 Also, the prediction result can be visualized using MeshLab or the *RenderShape* tool in [Thea](https://github.com/sidch/thea).
 
+## Citations
+
+Please cite our work if you find it useful:
+
+    @article{wang2022adaafford,
+        title={{AdaAfford}: Learning to Adapt Manipulation Affordance for 3D Articulated Objects via Few-shot Interactions},
+        author={Wang, Yian and Wu, Ruihai and Mo, Kaichun and Ke, Jiaqi and Fan, Qingnan and Guibas, Leonidas and Dong, Hao},
+        journal={European conference on computer vision (ECCV 2022)},
+        year={2022}
+    }
+
 
 ## License
 
