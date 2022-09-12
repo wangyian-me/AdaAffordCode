@@ -46,8 +46,8 @@ Please cite our work if you find it useful:
 
     @article{wang2022adaafford,
         title={{AdaAfford}: Learning to Adapt Manipulation Affordance for 3D Articulated Objects via Few-shot Interactions},
-        author={Wang, Yian and Wu, Ruihai and Mo, Kaichun and Ke, Jiaqi and Fan, Qingnan and Guibas, Leonidas and Dong, Hao},
-        journal={European conference on computer vision (ECCV 2022)},
+        author={Yian Wang and Ruihai Wu and  Kaichun Mo and Jiaqi Ke and Qingnan Fan and Leonidas Guibas and Hao Dong},
+        booktitle={European conference on computer vision},
         year={2022}
     }
 
