@@ -35,7 +35,7 @@ Then install PointNet++ as we need to process the point cloud.
     pip install -r requirements.txt
     pip install -e .
 
-The other requirements are included in env.yaml.
+The other requirements are included in `env.yaml`.
 
 For visualization, please install blender v2.79 and put the executable in your environment path.
 Also, the prediction result can be visualized using MeshLab or the *RenderShape* tool in [Thea](https://github.com/sidch/thea).
