@@ -1,5 +1,6 @@
 # AdaAfford: Learning to Adapt Manipulation Affordance for 3D Articulated Objects via Few-shot Interactions
 
+
 ![Overview](/images/adagif2.gif)
 
 We propose a novel framework, named AdaAfford, that learns to perform very few test-time interactions for quickly adapting the affordance priors to more accurate instance-specific posteriors.
